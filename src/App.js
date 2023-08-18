@@ -1,148 +1,182 @@
-
-import React, {Fragment, useState} from "react";
+import React, { Fragment, useState } from "react";
+import { nanoid } from "nanoid";
 import "./App.css";
-import data  from "./components/data.json";
-import read from "./components/read";
-import edit from "./components/edit";
+import data from "./components/data.json";
+import Read from "./components/read";
+import Edit from "./components/edit";
 
+ 
 
-function Table(){
-   const[ Contacts , setContacts] =useState(data);
-   const[ addFormData , setAddFormData ] = useState({
-    fullName:'',
-    Description:'',
-    phoneNumber:'',
-   });
+function Table() {
+  const [Contacts, setContacts] = useState(data);
+  const [addFormData, setAddFormData] = useState({
+    fullName: "",
+    address: "",
+    phoneNumber: "",
+  });
 
-   const[editformData , seteditformData] = useState({
-    fullName:'',
-    Description:'',
-    phoneNumber:'',
-   })
+ 
 
-   const[editContactId ,setEditContactId] = useState(null);
+  const [editFormData, setEditFormData] = useState({
+    fullName: "",
+    address: "",
+    phoneNumber: "",
+  });
 
+ 
 
+  const [editContactId, setEditContactId] = useState(null);
 
-   const handelAddFormChange = (event) => {
-    event.preventDefault();
+ 
 
-
-    const fieldName = event.target.getAttribute('name');
-    const filedvalue = event.target.value;
-
-
-    const newFormData = {...addFormData};
-
-    newFormData[fieldName] = filedvalue;
-
+  const handleAddFormChange = (event) => {
+    const fieldName = event.target.name;
+    const fieldValue = event.target.value;
+    const newFormData = { ...addFormData };
+    newFormData[fieldName] = fieldValue;
     setAddFormData(newFormData);
+  };
 
-   };
+ 
 
+  const handleEditFormChange = (event) => {
+    const fieldName = event.target.name;
+    const fieldValue = event.target.value;
+    const newFormData = { ...editFormData };
+    newFormData[fieldName] = fieldValue;
+    setEditFormData(newFormData);
+  };
 
-   const handeleditformchange  = ( event ) => {
+ 
+
+  const handleAddFormSubmit = (event) => {
     event.preventDefault();
-
-    const fieldName = event.target.getAttribute("name ");
-    const filedvalue = event. target.value;
-
-    const newFormData ={...editformData};
-    newFormData[fieldName] = filedvalue;
-
-   }
-
-   const handelAddFormsubmit =(event) =>{
-      event.preventDefault();
-
-      const newContact = {
-       
-        fullName:addFormData.fullName,
-        Description:addFormData.Description,
-        phoneNumber: addFormData.phoneNumber,
-      };
-
-
-      const newContacts = [ ...Contacts.newContact]
-      setContacts(newContacts);
-
+    const newContact = {
+      id: nanoid(),
+      fullName: addFormData.fullName,
+      address: addFormData.address,
+      phoneNumber: addFormData.phoneNumber,
     };
-      const handelAddFormsubmit =() => {
-        Event.preventDefault();
+    const newContacts = [...Contacts, newContact];
+    setContacts(newContacts);
+    setAddFormData({
+      fullName: "",
+      address: "",
+      phoneNumber: "",
+    });
+  };
 
+ 
 
-        const editedcontact = {
-            id: editContactId,
-            fullName: editformData.fullName,
-            Description: editformData.Description,
-            phoneNumber: editformData.phoneNumber,
-        }
-        
+  const handleEditFormSubmit = (event) => {
+    event.preventDefault();
+    const editedContact = {
+      id: editContactId,
+      fullName: editFormData.fullName,
+      address: editFormData.address,
+      phoneNumber: editFormData.phoneNumber,
+    };
+    const newContacts = Contacts.map((contact) =>
+      contact.id === editContactId ? editedContact : contact
+    );
+    setContacts(newContacts);
+    setEditContactId(null);
+  };
 
-        const newContacts = [... Contacts];
-        const index = Contacts.findIndex((Contacts) = > Contact.id = editContactId );
-       newContacts[index] = editedcontact;
-       setContacts(newContacts);
-       setEditContactId(null);
-      };
+ 
 
-      const handleeditclick = (event , Contact)=> {
-        event.preventDefault();
-        setEditContactId(Contact.id);
+  const handleEditClick = (event, contact) => {
+    event.preventDefault();
+    setEditContactId(contact.id);
+    setEditFormData({
+      fullName: contact.fullName,
+      address: contact.address,
+      phoneNumber: contact.phoneNumber,
+    });
+  };
 
+ 
 
-        const formvalues = {
-            fullName : Contact.fullName,
-            Description : Contact.Description,
-            phoneNumber : Contact.phoneNumber,
-        }
-        seteditformData(formvalues);
-      }
+  const handleCancelClick = () => {
+    setEditContactId(null);
+  };
 
-   };
-    return(
-        <div className="table">
-            <div>
-            
-            </div>
-            <form onSubmit={handleeditformsubmit}>   
-            <table>
-                <thead>
-                    <tr>
-                    <th>full Name</th>
-                    <th>Description</th>
-                    <th>phoneNumber</th>
-                    <th > Actions</th>
-                    </tr>
-                    </thead>
-            <tbody>
-                {Contacts.map ((Contact)=> (
-                 <Fragment>
-                    { editContactId === Contact.id ? (<edit editformData ={editformData} handeleditformchange = {handeleditformchange} /> ):(
-                    <read Contact = {Contacts}
-                     handleeditclick = {handleeditclick} />
-                    )}           
-                
-                  
-                
+ 
 
-                 </Fragment>   
-                 
-                ))}
-                
-            </tbody>
-          
+  const handleDeleteClick = (contactId) => {
+    const newContacts = Contacts.filter((contact) => contact.id !== contactId);
+    setContacts(newContacts);
+  };
+
+ 
+
+  return (
+<div className="detail">
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Address</th>
+<th>Phone Number</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody>
+          {Contacts.map((contact) => (
+<Fragment key={contact.id}>
+              {editContactId === contact.id ? (
+<Edit
+                  editFormData={editFormData}
+                  handleEditFormChange={handleEditFormChange}
+                  handleEditFormSubmit={handleEditFormSubmit}
+                  handleCancelClick={handleCancelClick}
+                />
+              ) : (
+<Read
+                  contact={contact}
+                  handleEditClick={(event) => handleEditClick(event, contact)}
+                  handleDeleteClick={() => handleDeleteClick(contact.id)}
+                />
+              )}
+</Fragment>
+          ))}
+</tbody>
+
 </table>
+y
+<h2>ADD CONTACT</h2>
+<form onSubmit={handleAddFormSubmit}>
+<input
+          type="text"
+          name="fullName"
+          required
+          placeholder="Enter the Name"
+          value={addFormData.fullName}
+          onChange={handleAddFormChange}
+        />
+<input
+          type="text"
+          name="address"
+          required
+          placeholder="Enter the Description"
+          value={addFormData.address}
+          onChange={handleAddFormChange}
+        />
+<input
+          type="text"
+          name="phoneNumber"
+          required
+          placeholder="Enter the Phone"
+          value={addFormData.phoneNumber}
+          onChange={handleAddFormChange}
+        />
+<button type="submit">ADD</button>
 </form>
-                 <h2> ADD CONTACT </h2>
-                 <form onSubmit={handelAddFormsubmit}>
-                    <input type = "text" name = "full Name" required  placeholder="Enter the Name " onChange={handelAddFormChange} />
-                    <input type = "text" name = "Description" required  placeholder="Enter the Descdiption " onChange={handelAddFormChange} />
-                    <input type = "text" name = "phoneNumber" required  placeholder="Enter the Phone " onChange={handelAddFormChange}/>
-                    <button type="submit"> ADD </button>
-                 </form>
 </div>
-    )}
+  );
+}
+
+ 
 
 export default Table;
 

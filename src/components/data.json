@@ -2,21 +2,21 @@
     {
         "id":1,
         "Name": "Ravi",
-        "Description" : " Teacher",
-        "phoneNumber" : "0774567892"
+        "Address" : " Chunnakam",
+        "Phone Number" : "0774567892"
     },
 
     {
         "id":2,
         "Name": "Ratha",
-        "Description" : " Doctor",
+        "Address" : " Jaffna ",
         "phoneNumber" : "0767894523"
     },
 
     {
         "id":3,
         "Name": "Mala",
-        "Description" : " Teacher",
+        "Description" : " Mallakam",
         "phoneNumber" : "0724567895"
     }
 ]
