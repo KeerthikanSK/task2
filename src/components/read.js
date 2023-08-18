@@ -1,14 +1,14 @@
 // Read.js
 import React from "react";
 
-const Read = ({ Contact, handleEditclick, handleDeleteClick }) => {
+const Read = ({ Contact, handleEditClick, handleDeleteClick }) => {
   return (
     <tr>
       <td>{Contact.fullName}</td>
       <td>{Contact.address}</td>
       <td>{Contact.phoneNumber}</td>
       <td>
-        <button type="button" onClick={() => handleEditclick(Contact)}>
+        <button type="button" onClick={() => handleEditClick(Contact)}>
           Edit
         </button>
         <button type="button" onClick={() => handleDeleteClick(Contact.id)}>

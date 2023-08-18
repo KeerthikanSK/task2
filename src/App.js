@@ -5,8 +5,6 @@ import data from "./components/data.json";
 import Read from "./components/read";
 import Edit from "./components/edit";
 
- 
-
 function Table() {
   const [Contacts, setContacts] = useState(data);
   const [addFormData, setAddFormData] = useState({
@@ -15,19 +13,13 @@ function Table() {
     phoneNumber: "",
   });
 
- 
-
   const [editFormData, setEditFormData] = useState({
     fullName: "",
     address: "",
     phoneNumber: "",
   });
 
- 
-
   const [editContactId, setEditContactId] = useState(null);
-
- 
 
   const handleAddFormChange = (event) => {
     const fieldName = event.target.name;
@@ -37,8 +29,6 @@ function Table() {
     setAddFormData(newFormData);
   };
 
- 
-
   const handleEditFormChange = (event) => {
     const fieldName = event.target.name;
     const fieldValue = event.target.value;
@@ -46,8 +36,6 @@ function Table() {
     newFormData[fieldName] = fieldValue;
     setEditFormData(newFormData);
   };
-
- 
 
   const handleAddFormSubmit = (event) => {
     event.preventDefault();
@@ -66,8 +54,6 @@ function Table() {
     });
   };
 
- 
-
   const handleEditFormSubmit = (event) => {
     event.preventDefault();
     const editedContact = {
@@ -83,12 +69,12 @@ function Table() {
     setEditContactId(null);
   };
 
-  const handleEditClick = (event, contact) => {
-    event.preventDefault();
+  const handleEditClick = (contact) => {
+    //event.preventDefault();
     setEditContactId(contact.id);
     setEditFormData({
-      fullName: contact.Name,
-      address: contact.Address,
+      fullName: contact.fullNameame,
+      address: contact.address,
       phoneNumber: contact.phoneNumber,
     });
   };
@@ -126,7 +112,7 @@ function Table() {
               ) : (
                 <Read
                   Contact={contact}
-                  handleEditClick={(event) => handleEditClick(event, contact)}
+                  handleEditClick={() => handleEditClick(contact)}
                   handleDeleteClick={() => handleDeleteClick(contact.id)}
                 />
               )}
@@ -167,16 +153,4 @@ function Table() {
   );
 }
 
- 
-
 export default Table;
-
-
-
-
-
-
-
-     
-    
-  

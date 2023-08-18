@@ -2,8 +2,8 @@
     {
         "id":1,
         "Name": "Ravi",
-        "Address" : " Chunnakam",
-        "PhoneNumber" : "0774567892"
+        "Description" : " Teacher",
+        "phoneNumber" : "0774567892"
     },
 
     {
