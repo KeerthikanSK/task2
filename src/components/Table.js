@@ -1,101 +1,174 @@
-import React from "react";
-import React, {useState} from "react";
-import data  from "./data.json"
+import React, { useState, useRef } from "react";
+import data from "./data.json";
 
+function Table() {
+  const [membersData, setMembersData] = useState(data);
+  const [editState, setEditState] = useState(null);
 
+  function handleEdit(id) {
+    setEditState(id);
+  }
 
-function Table(){
-    const [data, setData] = useState(data)
-    const [ editstate, seteditstate ]= usestate(false)
-    return(
-        <div className="table">
-            <div>
-                <AddMember setData={setData}/>
-            </div>
-            <table>
-                <head>
-                    <th>full Name</th>
-                    <th>Description</th>
-                    <th>phoneNumber</th>
-                    <th > Action</th>
-                </head>
-                {
-                    data.map((current)=> (
-                        editstate === current.id? <EditMember/>:
-                        <tr>
-                            <td>
-                                {current.Name}
-                            </td>
-                            <td>
-                                {current.Description}
-                            </td>
-                            <td>
-                                {current.phoneNumber}
-                            </td>
-                            <td> <button className="edit" onClick={handeledit}>EDIT</button>
-                            <button className="delete">DELETE</button>
-                            </td>
-                        </tr>
+  function handleUpdate(updatedData) {
+    const updatedMembersData = membersData.map((member) =>
+      member.id === updatedData.id ? updatedData : member
+    );
+    setMembersData(updatedMembersData);
+    setEditState(null);
+  }
 
-                    ))
-                }
-            </table>
+  const [Contacts, setContacts] = useState([
+    // Your array of contacts here
+  ]);
 
-        </div>
-    )
+  const handleEditclick = (contact) => {
+    // Implement your edit click logic here
+    console.log("Edit clicked for:", contact);
+  };
+
+  const handleDeleteClick = (contactId) => {
+    // Implement your delete click logic here
+    console.log("Delete clicked for contact ID:", contactId);
+  };
+
+  return (
+    <div className="table">
+      <div>
+        <AddMember setMembersData={setMembersData} membersData={membersData} />
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Full Name</th>
+            <th>Description</th>
+            <th>Phone Number</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {membersData.map((current) =>
+            editState === current.id ? (
+              <EditMember
+                key={current.id}
+                current={current}
+                onUpdate={handleUpdate}
+              />
+            ) : (
+              <tr key={current.id}>
+                <td>{current.Name}</td>
+                <td>{current.Description}</td>
+                <td>{current.phoneNumber}</td>
+                <td>
+                  <button
+                    className="edit"
+                    onClick={() => handleEdit(current.id)}
+                  >
+                    EDIT
+                  </button>
+                  <button className="delete">DELETE</button>
+                </td>
+              </tr>
+            )
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
 }
-function handeledit(id){
-    seteditstate(id)
+
+function EditMember({ current, onUpdate }) {
+  const nameRef = useRef();
+  const descriptionRef = useRef();
+  const phoneNumberRef = useRef();
+
+  function handleUpdateClick() {
+    const updatedData = {
+      id: current.id,
+      name: nameRef.current.value,
+      Description: descriptionRef.current.value,
+      phoneNumber: phoneNumberRef.current.value,
+    };
+    onUpdate(updatedData);
+  }
+
+  return (
+    <tr>
+      <td>
+        <input
+          type="text"
+          defaultValue={current.name}
+          ref={nameRef}
+          placeholder="Enter the Name"
+        />
+      </td>
+      <td>
+        <input
+          type="text"
+          defaultValue={current.Description}
+          ref={descriptionRef}
+          placeholder="Enter the Description"
+        />
+      </td>
+      <td>
+        <input
+          type="text"
+          defaultValue={current.phoneNumber}
+          ref={phoneNumberRef}
+          placeholder="Enter the phonenumber"
+        />
+      </td>
+      <td>
+        <button onClick={handleUpdateClick}>Update</button>
+      </td>
+    </tr>
+  );
 }
 
-function EditMember(current){
-    return(
-        <tr>
-            <td>
-            <input type="text" value={current.name} name="name" placeholder="Enter the Name" />
-            </td>
-            <td>
-            <input type="text" value={current.Description} name="name" placeholder="Enter the Desription " />
-            </td>
-            <td>
-            <input type="text"  value={current.phoneNumber}     name="name" placeholder="Enter the phonenumber" />
-            </td>
-            <td> <button type="submit">Update</button> </td>
-        </tr>
-    )
+function AddMember({ setMembersData, membersData }) {
+  const nameRef = useRef();
+  const descriptionRef = useRef();
+  const phoneNumberRef = useRef();
+
+  function handleValues(event) {
+    event.preventDefault();
+    const name = nameRef.current.value;
+    const Description = descriptionRef.current.value;
+    const phoneNumber = phoneNumberRef.current.value;
+    const newMember = {
+      id: membersData.length + 1, // Generate a unique ID here
+      name,
+      Description,
+      phoneNumber,
+    };
+    setMembersData((prevData) => [...prevData, newMember]);
+    nameRef.current.value = "";
+    descriptionRef.current.value = "";
+    phoneNumberRef.current.value = "";
+  }
+
+  return (
+    <form className="addform" onSubmit={handleValues}>
+      <input
+        type="text"
+        name="name"
+        placeholder="Enter the Name"
+        ref={nameRef}
+      />
+      <input
+        type="text"
+        name="Description"
+        placeholder="Enter the Description"
+        ref={descriptionRef}
+      />
+      <input
+        type="text"
+        name="phoneNumber"
+        placeholder="Enter the phonenumber"
+        ref={phoneNumberRef}
+      />
+      <button>ADD</button>
+    </form>
+  );
 }
 
-
-function AddMember (setData){
-    const nameRef = useRef()
-    const DescriptionRef = useRef()
-    const phoneNumberRef = useRef()
-
-
-    function handleValues(event) {
-        eventpreventDefault();
-        const name = Event.target.elements.name.value;
-        const Description = Event.target.elements.Description.value;
-        const phoneNumber = Event.target.elements.phoneNumber.value;
-        const newmember ={
-            id: 4,
-            name,
-            Description,
-            phoneNumber,
-        }
-        setData(predata => prevdata.contact(newmember))
-        nameRef. current.value = ""
-        DescriptionRef. current.value = ""
-        phoneNumberRef. current.value = ""
-    }
-    return(
-        <form className="addform" onSubmit={handleValues}> 
-            <input type="text" name="name" placeholder="Enter the Name" ref={nameRef}/>
-            <input type="text" name="name" placeholder="Enter the Desription " ref={DescriptionRef}/>
-            <input type="text" name="name" placeholder="Enter the phonenumber" ref={phoneNumberRef}/>
-            <button>ADD</button>
-        </form>
-    )
-}
 export default Table;
-
